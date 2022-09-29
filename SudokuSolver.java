@@ -18,3 +18,4 @@ public class SudokuSolver {
 
     }
 }
+// same number of unique elements as boxes they take up

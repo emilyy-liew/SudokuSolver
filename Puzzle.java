@@ -1,9 +1,11 @@
 public class Puzzle {
     static int[][][][] puzzle;
+    static int[][] countOfEach;
     private static boolean solved;
 
     Puzzle() {
         puzzle = new int[3][3][3][3];
+        countOfEach = new int[10][9];
         solved = false;
     }
 
@@ -58,28 +60,29 @@ public class Puzzle {
             for (int y = 0; y < 3; y++) {
                 for (int x = 0; x < 3; x++) {
                     for (int z = 0; z < 3; z++) {
-                        if(ifSolved()) {
-                            solved = true;
-                        }
+                        solved = checkSolved();
                         if(puzzle[w][x][y][z] < 10) {
                             eliminateNumberinRow(puzzle[w][x][y][z], w, y);
                             eliminateNumberinColumn(puzzle[w][x][y][z], x, z);
                             eliminateNumberin3By3(puzzle[w][x][y][z], w, x);
                         } else {
-                            for (int a = 1; a < 10; a++) {
-                                //if (Integer.toString(puzzle[w][x][y][z]).indexOf(Integer.toString(a)) != -1);
+                            for (int c = 1; c < 10; c++) {
+                                if (Integer.toString(puzzle[w][x][y][z]).indexOf(Integer.toString(c)) != -1) {
+                                    countOfEach[0][c-1] += 1;
+                                    countOfEach[z + 1 + x * 3][c-1] += 1;
+                                }
                             }
                         }
                     }
                 }
+                setOnlyOneinRow(w, y);
             }
         }
+        setOnlyOneinCol();
     }
 
     public static void eliminateNumberInBox(int eliminate, int w, int x, int y, int z) {
-        String temp = "" + puzzle[w][x][y][z];
-        String find = "" + eliminate;
-        if (temp.indexOf(find) != -1) {
+        if (Integer.toString(puzzle[w][x][y][z]).indexOf(Integer.toString(eliminate)) != -1) {
             puzzle[w][x][y][z] = Integer.valueOf(Integer.toString(puzzle[w][x][y][z]).substring(0, Integer.toString(puzzle[w][x][y][z]).indexOf(Integer.toString(eliminate))) + Integer.toString(puzzle[w][x][y][z]).substring(Integer.toString(puzzle[w][x][y][z]).indexOf(Integer.toString(eliminate)) + 1));
         }
     }
@@ -114,7 +117,39 @@ public class Puzzle {
         }
     }
 
-    public static boolean ifSolved() {
+    public static void setOnlyOneinRow(int w, int y) {
+        for (int c = 0; c < 9; c++) {
+            if (countOfEach[0][c] == 1) {
+                for (int x = 0; x < 3; x++) {
+                    for (int z = 0; z < 3; z++) {
+                        if (Integer.toString(puzzle[w][x][y][z]).indexOf(Integer.toString(c+1)) != -1) {
+                            puzzle[w][x][y][z] = c + 1;
+                        }
+                    }
+                }
+            }
+        }
+        clearCountRow();
+    }
+
+    public static void setOnlyOneinCol() {
+        for (int r = 1; r < 10; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (countOfEach[r][c] == 1) {
+                    for (int w = 0; w < 3; w++) {
+                        for (int y = 0; y < 3; y++) {
+                            if (Integer.toString(puzzle[w][(r-1)/3][y][(r-1)%3]).indexOf(Integer.toString(c+1)) != -1) {
+                                puzzle[w][(r-1)/3][y][(r-1)%3] = c + 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        clearCount();
+    }
+
+    public static boolean checkSolved() {
         for (int w = 0; w < 3; w++) {
             for (int y = 0; y < 3; y++) {
                 for (int x = 0; x < 3; x++) {
@@ -128,4 +163,19 @@ public class Puzzle {
         }
         return true;
     }
+
+    public static void clearCountRow() {
+        for(int c = 0; c < 9; c++) {
+            countOfEach[0][c] = 0;
+        }
+    }
+
+    public static void clearCount() {
+        for(int r = 0; r < 9; r++) {
+            for(int c = 0; c < 9; c++) {
+                countOfEach[r][c] = 0;
+            }
+        }
+    }
+    // sort
 }
