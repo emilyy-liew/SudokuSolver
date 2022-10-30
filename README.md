@@ -1,5 +1,5 @@
 # SudokuSolver
-This program can solve any sudoku with equivalent difficulty to a NY Times Easy Puzzle.
+This program can solve any sudoku with equivalent difficulty to a NY Times Medium Puzzle.
 You type in the placement of the numbers at the beginning of the program to match the sudoku puzzle you are trying to solve, and it will return the solved puzzle.
 
 # Note for Typing in the Numbers
